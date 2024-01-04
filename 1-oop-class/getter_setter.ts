@@ -42,6 +42,7 @@ class ExampleClass {
 
     return this._username;
   }
+
   // Bir setter method tanımlandığında bu methodun mutlaka bir adet parametresi olmalıdır
   // Bir değer döndermemelidir aksi halde hata verir
   set username(param1: string) {
