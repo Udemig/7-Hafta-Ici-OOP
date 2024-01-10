@@ -23,7 +23,7 @@ function exampleFn<ExampleGenericType>(
 ): ExampleGenericType {
   return param2;
 }
-const example = exampleFn("test", 43);
+const example = exampleFn("test", true);
 console.log(example, typeof example);
 
 function exampleFn_2<Generic1, Generic2, Generic3>(
@@ -59,5 +59,81 @@ function useState<StateType>(
     },
   ];
 }
-const [counter, setCounter] = useState("test");
+const [counter, setCounter] = useState(0);
 console.log(">>> counter:", counter);
+setCounter(54);
+// generic type'ın türünü burada spesifik olarak belirleriz
+const [counter1, setCounter_1] = useState<number>(54);
+// Burada ise generic type'ın türünü otamatik olarak set edilmesini istemiş oluruz
+const [counter_2, setCounter_2] = useState("test");
+/*
+  ! Not:
+  * Normalde generic type'ın türünü tanımlamak zorunda değiliz fakat özellikle uniyon typlerda
+  * (yani birden fazla tür almasını istiyorsak) o zaman bu generic typeın türünü set etmeliyiz.
+
+*/
+const [day, setDay] = useState<number | string | null>("pazartes,");
+setDay(3);
+setDay(null);
+setDay("pazartesi");
+
+//
+// 1.T(Type): Genellikle genel tür parametresini ifade etmek için kullanılr
+function idendity<T>(arg: T): T {
+  return arg;
+}
+// 2.V(Value):Genellik bir değeri temsil etmek için kullanılır.
+// 3.K(Key):Genellikle nesne özelliklerini temsil etmek için kullanılır.
+function createKeyValue<K, V>(key: K, value: V): { key: K; value: V } {
+  return { key, value };
+}
+
+// 4.S(State):
+class StateManager<S> {
+  private currentState: S;
+  constructor(initialState: S) {
+    this.currentState = initialState;
+  }
+  getState(): S {
+    return this.currentState;
+  }
+  setState(newState: S): void {
+    this.currentState = newState;
+  }
+}
+
+//
+
+function createTuple<T, X>(first: T, second: X): [T, X] {
+  return [first, second];
+}
+const stringAndNumberTuple = createTuple<string, number>("test", 22);
+console.log(stringAndNumberTuple);
+const booleanAndObjectTuple = createTuple<boolean, { key: string }>(true, {
+  key: "234234",
+});
+console.log(booleanAndObjectTuple);
+
+interface Person {
+  name: string;
+  age: number;
+}
+const people: Person[] = [
+  { name: "test", age: 20 },
+  { name: "ahmet", age: 29 },
+  { name: "evliya", age: 35 },
+  { name: "hilal", age: 26 },
+];
+
+/*
+  - Fonksiyon için şu iki parametre tanımlanmıştır:
+  * 1:list:T[] >>> 
+  * 2.condition: (item: T) => boolean >>> 
+
+*/
+function filterList<T>(list: T[], condition: (item: T) => boolean): T[] {
+  return list.filter((item) => condition(item));
+}
+
+const youngPeople = filterList(people, (person) => person.age < 30);
+console.log(youngPeople);
